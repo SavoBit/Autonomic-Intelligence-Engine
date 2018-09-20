@@ -33,13 +33,7 @@ Required Python Packages:
 
 For the machine learning logic the necessary **NVIDIA Cuda Toolkit** ( here v.9.0 was used) and matching **cudnn** should be installed and set up. Guides can be found here for 
 
-[Windows]: https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html
-
-and 
-
-[Linux]: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
-
-
+[Windows](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html)  and [Linux](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
 
 In case that the other components of the Selfnet Framework are skipped, make sure to indicate so in the YAML-config according to the provided shema. 
 
