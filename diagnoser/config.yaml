@@ -1,0 +1,10 @@
+$schema: config-schema.yaml#
+additional-configs:
+  - /etc/selfnet/diagnoser/config.yaml
+  - /usr/share/selfnet/diagnoser/config.yaml
+  - /usr/local/share/selfnet/diagnoser/config.yaml
+  - ~/.config/selfnet/diagnoser/config.yaml
+  - ./config.yaml
+  - ../etc/config.yaml
+  - ../share/config.yaml
+  - ../config.yaml

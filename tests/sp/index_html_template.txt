@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NEAT output</title>
+<style>
+body { font-family: sans; }
+.nets {
+  display: block;
+  margin: 0pt;
+  border: none;
+  padding: 0pt;
+  width: 100%;
+  height: 100%;
+}
+.nets tr { height: 25%; }
+.nets td { width: 25%; }
+.nets img {
+  width: 100%;
+  height: 100%;
+  max-width: 300px;
+  max-height: 300px;
+}
+.specs td {
+  padding-right: 1em;
+}
+.specs thead td {
+  text-align: center;
+}
+.specs tbody td {
+  text-align: right;
+}
+</style>
+</head>
+<body onload="window.setTimeout(function(){window.location.reload();},1000);">
+<p>
+  <table class="nets">
+{% for row in nets %}
+    <tr>
+{% for net in row %}
+      <td><a href="{{net.svg}}"><img src="{{net.svg}}" alt=""></img></a><br></br>net.fitness: {{net.fitness|round(4)}}</td>
+{% endfor %}
+    </tr>
+{% endfor %}
+  </table>
+</p>
+<p>
+  Species overview: {{n_genomes}} members in {{n_species}} species
+  <table class="specs">
+    <thead>
+      <tr>
+        <td>ID</td>
+        <td>age</td>
+        <td>size</td>
+        <td>fitness</td>
+        <td>adj fit</td>
+        <td>stag</td>
+      </tr>
+    </thead>
+    <tbody>
+{% for s in species %}
+      <tr>
+        <td>{{s.id}}</td>
+        <td>{{s.age}}</td>
+        <td>{{s.size}}</td>
+        <td>{{s.fitness}}</td>
+        <td>{{s.adjfit}}</td>
+        <td>{{s.stag}}</td>
+      </tr>
+{% endfor %}
+    </tbody>
+  </table>
+</p>
+</body>
+</html>

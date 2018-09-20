@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns0:tal  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:ns0='tal.cse.com'
+          xsi:schemaLocation='tal.cse.com tal.xsd'>
+    <ns0:reaction>
+        <ns0:diagnosis>
+            <ns0:symptom OID="SH_LOOP_II">
+                <ns0:analysis>
+                    <ns0:aggregation>
+                        <ns0:aggregationItem OID="From The Service Catalogue">
+                            <ns0:aggregationRule OID="" description="">
+                                <ns0:metric>
+                                    <ns0:name>
+                                        <ns0:parameter>
+                                            <ns0:OID>Number</ns0:OID>
+                                            <ns0:name>Degradation</ns0:name>
+                                        </ns0:parameter>
+                                    </ns0:name>
+                                    <ns0:dimensions>
+                                        <ns0:parameter>
+                                            <ns0:OID>UUID</ns0:OID>
+                                            <ns0:name>appId</ns0:name>
+                                        </ns0:parameter>
+                                    </ns0:dimensions>
+                                </ns0:metric>
+                            </ns0:aggregationRule>
+                        </ns0:aggregationItem>
+                    </ns0:aggregation>
+                </ns0:analysis>
+            </ns0:symptom>
+            <ns0:causes>
+                <ns0:cause causeOID="vnf.faulty" description="Faulty VNF" likelihood="0.99"/>
+            </ns0:causes>
+        </ns0:diagnosis>
+        <ns0:tactic description="Disable APP" id="RES" priority="1">
+            <ns0:cause causeOID="vnf.faulty" description="Faulty VNF" />
+            <ns0:action id="service.operation" order="1">
+                <ns0:actionOption operation="PUT" typeOfOption="add">
+                    <ns0:resourceAction>
+                        <ns0:details>
+                            <ns0:parameter>
+                                <ns0:OID>URL</ns0:OID>
+                                <ns0:name>url</ns0:name>
+                                <ns0:value>http://10.4.1.22:8081/app-catalogue/app-packages/</ns0:value>
+                            </ns0:parameter>
+                            <ns0:parameter>
+                                <ns0:OID>String</ns0:OID>
+                                <ns0:name>path</ns0:name>
+                                <ns0:value>appId</ns0:value>
+                            </ns0:parameter>
+                            <ns0:parameter>
+                                <ns0:OID>String</ns0:OID>
+                                <ns0:name>path</ns0:name>
+                                <ns0:value>action</ns0:value>
+                            </ns0:parameter>
+                            <ns0:parameter>
+                                <ns0:OID>query</ns0:OID>
+                                <ns0:name>status</ns0:name>
+                                <ns0:value>disable</ns0:value>
+                            </ns0:parameter>
+                        </ns0:details>
+                    </ns0:resourceAction>
+                </ns0:actionOption>
+            </ns0:action>
+        </ns0:tactic>
+    </ns0:reaction>
+</ns0:tal>

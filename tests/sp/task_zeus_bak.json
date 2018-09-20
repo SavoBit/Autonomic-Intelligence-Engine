@@ -1,0 +1,136 @@
+    {
+        "name": "SP1-10-10_generated",
+        "timeout": null,
+        "priority": 50000,
+        "group": "altaia",
+        "type": "selfnet",
+        "body":
+        {
+            "bodyClassType": "pt.ptinovacao.selfnet.aggregation.collector.spark.api.SparkBody",
+            "start": 1490291340000,
+            "end": 1490291370000,
+            "bulk": 500,
+            "entityType": "SP1",
+            "resourceType": "FLOW_SAMPLE",
+            "dimension":
+            {
+                "name": "SrcDest",
+                "dimensionAttributes":
+                [
+                    {
+                        "name": "srcIP",
+                        "label": "SourceIP",
+                        "attributeType": "DESCRIPTION"
+                    },
+                    {
+                        "name": "srcPort",
+                        "label": "SourcePort",
+                        "attributeType": "DESCRIPTION"
+                    },
+                    {
+                        "name": "dstIP",
+                        "label": "DestinationIP",
+                        "attributeType": "DESCRIPTION"
+                    },
+                    {
+                        "name": "dstPort",
+                        "label": "DestinationPort",
+                        "attributeType": "DESCRIPTION"
+                    },
+                    {
+                        "name": "flowHash",
+                        "label": "FlowID",
+                        "attributeType": "DESCRIPTION"
+                    },
+                    {
+                        "name": "serviceID",
+                        "label": "serviceID",
+                        "attributeType": "DESCRIPTION"
+                    }
+                ]
+            },
+            "metrics":
+            [
+                {
+                    "name": "zeus_zombie_classif_generated",
+                    "formula":
+                    {
+                        "expression": "(ceil((signum(coalesce(log( 1 / (log(_totalBits) * 0.913 - 5.9) * (-0.65) -0.86),0)-0.5)+1)*0.5))",
+                        "parameters":
+                        [
+                            {
+                                "name": "_totalBits",
+                                "counter": "totalBits",
+                                "aggregation": "max",
+                                "type": "COUNTER",
+                                "groupByAttributes":
+                                [
+                                    {
+                                        "name": "srcIP",
+                                        "label": null,
+                                        "attributeType": "DESCRIPTION"
+                                    },
+                                    {
+                                        "name": "dstIP",
+                                        "label": null,
+                                        "attributeType": "DESCRIPTION"
+                                    },
+                                    {
+                                        "name": "dstPort",
+                                        "label": null,
+                                        "attributeType": "DESCRIPTION"
+                                    },
+                                    {
+                                        "name": "flowHash",
+                                        "label": null,
+                                        "attributeType": "DESCRIPTION"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "filters": [
+                    {
+                        "column": "srcIP",
+                        "value": null,
+                        "operation": "NOT_NULL"
+                    },
+                    {
+                        "column": "dstIP",
+                        "value": null,
+                        "operation": "NOT_NULL"
+                    },
+                    {
+                        "column": "dstPort",
+                        "value": null,
+                        "operation": "NOT_NULL"
+                    },
+                    {
+                        "column": "srcPort",
+                        "value": null,
+                        "operation": "NOT_NULL"
+                    }
+                ],
+                    "metadata": null
+                }
+            ],
+            "consumer":
+            {
+                "name": "monasca",
+                "consumerClass": "pt.ptinovacao.selfnet.aggregation.executor.consumer.MonascaRestResultConsumer",
+                "type": "PARTITION",
+                "configurations":
+                {
+                }
+            },
+            "utc": true
+        },
+        "state": "ACTIVE",
+        "schedule":
+        {
+            "start": "2017-02-21T12:08:45.159+0000",
+            "end": "2100-12-31T23:59:59.999+0000",
+            "period": 10000,
+            "delay": 10000
+        }
+    }

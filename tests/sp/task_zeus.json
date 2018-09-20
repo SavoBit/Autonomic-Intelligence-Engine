@@ -1,0 +1,133 @@
+{
+    "name": "SP1-10-10-ai_zeus",
+    "timeout": null,
+    "priority": 50000,
+    "group": "altaia",
+    "type": "selfnet",
+    "body": {
+        "bodyClassType": "pt.ptinovacao.selfnet.aggregation.collector.spark.api.SparkBody",
+        "start": 1490291340000,
+        "end": 1490291370000,
+        "bulk": 500,
+        "entityType": "SP1",
+        "resourceType": "FLOW_SAMPLE",
+        "dimension": {
+            "name": "SrcDest",
+            "dimensionAttributes": [
+                {
+                    "name": "srcIP",
+                    "label": "SourceIP",
+                    "attributeType": "DESCRIPTION"
+                },
+                {
+                    "name": "srcPort",
+                    "label": "SourcePort",
+                    "attributeType": "DESCRIPTION"
+                },
+                {
+                    "name": "dstIP",
+                    "label": "DestinationIP",
+                    "attributeType": "DESCRIPTION"
+                },
+                {
+                    "name": "dstPort",
+                    "label": "DestinationPort",
+                    "attributeType": "DESCRIPTION"
+                },
+                {
+                    "name": "serviceID",
+                    "label": "serviceID",
+                    "attributeType": "DESCRIPTION"
+                }
+            ]
+        },
+        "metrics": [
+            {
+                "name": "ai_zeus",
+                "formula": {
+                    "expression": "coalesce(signum(signum((coalesce(1./(((((_totalpktCount_stddev * -4.2398971826961365)) * 0.5616902871116325) + (4.7700864248897545))),0.)) - .5) + 1), 0)",
+                    "parameters": [
+                        {
+                            "name": "_totalpktCount_stddev",
+                            "counter": "totalpktCount",
+                            "aggregation": "stddev",
+                            "type": "COUNTER",
+                            "groupByAttributes": [
+                                {
+                                    "name": "srcIP",
+                                    "label": null,
+                                    "attributeType": "DESCRIPTION"
+                                },
+                                {
+                                    "name": "dstIP",
+                                    "label": null,
+                                    "attributeType": "DESCRIPTION"
+                                },
+                                {
+                                    "name": "dstPort",
+                                    "label": null,
+                                    "attributeType": "DESCRIPTION"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "filters": [
+                    {
+                        "column": "srcIP",
+                        "value": null,
+                        "operation": "NOT_NULL"
+                    },
+                    {
+                        "column": "srcIP",
+                        "value": [
+                            "8.8.8.8"
+                        ],
+                        "operation": "NOT_EQUALS"
+                    },
+                    {
+                        "column": "dstPort",
+                        "value": null,
+                        "operation": "NOT_NULL"
+                    },
+                    {
+                        "column": "dstPort",
+                        "value": [
+                        	"2152"
+                        ],
+                        "operation": "NOT_EQUALS"
+                    },
+                    {
+                        "column": "dstPort",
+                        "value": [
+                        	"67"
+                        ],
+                        "operation": "NOT_EQUALS"
+                    },
+                    {
+                        "column": "dstIP",
+                        "value": [
+                            "8.8.8.8"
+                        ],
+                        "operation": "NOT_EQUALS"
+                    }
+                ],
+                "metadata": null
+            }
+        ],
+        "consumer": {
+            "name": "monasca",
+            "consumerClass": "pt.ptinovacao.selfnet.aggregation.executor.consumer.MonascaRestResultConsumer",
+            "type": "PARTITION",
+            "configurations": {}
+        },
+        "utc": true
+    },
+    "state": "ACTIVE",
+    "schedule": {
+        "start": "2017-02-21T12:08:45.159+0000",
+        "end": "2100-12-31T23:59:59.999+0000",
+        "period": 10000,
+        "delay": 60000
+    }
+}

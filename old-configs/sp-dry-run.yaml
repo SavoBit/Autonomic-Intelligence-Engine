@@ -1,0 +1,204 @@
+kafka:
+  topics:
+    - cep_output
+  bootstrap-servers:
+    - 192.168.89.226:9092
+  from-file: tests/sp/kafka.jsonl
+cassandra:
+  host: 192.168.89.225
+  keyspace: selfnet
+  username: selfnet
+  password: selfnet
+  time-limit: 600
+  row-limit: 4096
+  fetch-size: 4096
+  from-file: tests/sp/cassandra.pickle.lz4
+task-manager:
+  task-url: http://192.168.89.225:9001/altaia/api/task/manager/tasks/
+monasca:
+  endpoint: http://192.168.89.224:8070/v2.0
+  auth-url: http://192.168.89.224:5000/v3
+  username: mini-mon
+  password: password
+  project-name: mini-mon
+  user-domain-id: default
+  project-domain-id: default
+  to-file: "-"
+model-db:
+  host: localhost
+  port: 27017
+  db-name: intlmod
+  collection-name: models
+metric-prefix: ai
+output-directory: HOME/selfnet-diagnoser-output
+test-configurations:
+  active-test: sp
+  sp:
+    metric-name: zeus_loop_3
+    task-name: SP1-10-10-zeus_loop_3
+    alarm-name: zeus_loop_3_alarm
+    rule-name: SP_LOOP_III_zeus_loop_3
+    neat-config: tests/sp/neat.conf
+    disable-kafka: true
+    max-botnet-ips: 2
+    botnet-ips:
+      - 192.168.10.8
+      #- 10.0.255.11
+      #- 10.0.255.12
+      #- 10.0.255.13
+      - 192.168.10.14
+    #time-window:
+    #  - "2017-07-13T15:00:00"
+    #  - "2017-07-13T15:05:00"
+    time-window:
+      - "2017-07-13T15:00:00"
+      - "2017-07-13T15:05:00"
+    canned-task-file: tests/sp/task_zeus.json
+  sh:
+    disable-kafka: true
+    #raw-data-filename: tests/sh/cassandra.pickle.lz4
+    raw-data-columns:
+      - timestamp
+      - reporterdescription.reporterHostname
+      - datadefinition.CPU
+      - datadefinition.ENS4_IN
+      - datadefinition.ENS4_OUT
+      - datadefinition.ENS5_IN
+      - datadefinition.ENS5_OUT
+      - datadefinition.HDD
+      - datadefinition.MEM
+    data-ranges:
+      normal-0:
+        timestamp:
+          - "2018-02-19T16:15:00"
+          - "2018-02-19T17:15:00"
+        reporterdescription.reporterHostname: FW1
+      normal-1:
+        timestamp:
+          - "2018-02-19T16:15:00"
+          - "2018-02-19T17:15:00"
+        reporterdescription.reporterHostname: FW2
+      memleak-no-traffic-0:
+        timestamp:
+          - "2018-02-28T13:10:00"
+          - "2018-02-28T13:15:00"
+        reporterdescription.reporterHostname: FW1
+      memleak-no-traffic-1:
+        timestamp:
+          - "2018-02-28T13:10:00"
+          - "2018-02-28T13:15:00"
+        reporterdescription.reporterHostname: FW2
+      memleak-normal-0:
+        timestamp:
+          - "2018-02-28T13:15:00"
+          - "2018-02-28T13:30:00"
+        reporterdescription.reporterHostname: FW1
+      memleak-normal-1:
+        timestamp:
+          - "2018-02-28T13:15:00"
+          - "2018-02-28T13:30:00"
+        reporterdescription.reporterHostname: FW2
+      memleak-0:
+        timestamp:
+          - "2018-02-28T13:30:00"
+          - "2018-02-28T13:45:00"
+        reporterdescription.reporterHostname: FW1
+      memleak-1:
+        timestamp:
+          - "2018-02-28T13:30:00"
+          - "2018-02-28T13:45:00"
+        reporterdescription.reporterHostname: FW2
+      ext-0:
+        timestamp:
+          - "2018-03-06"
+          - "2018-03-07"
+        reporterdescription.reporterHostname: FW1
+      ext-1:
+        timestamp:
+          - "2018-03-06"
+          - "2018-03-07"
+        reporterdescription.reporterHostname: FW2
+      ext-2:
+        timestamp:
+          - "2018-03-07"
+          - "2018-03-08"
+        reporterdescription.reporterHostname: FW1
+      ext-3:
+        timestamp:
+          - "2018-03-07"
+          - "2018-03-08"
+        reporterdescription.reporterHostname: FW2
+      ext-short-0:
+        timestamp:
+          - "2018-03-06T23:00:00"
+          - "2018-03-07T00:00:00"
+        reporterdescription.reporterHostname: FW1
+      ext-short-1:
+        timestamp:
+          - "2018-03-06T23:00:00"
+          - "2018-03-07T00:00:00"
+        reporterdescription.reporterHostname: FW2
+      ext-short-2:
+        timestamp:
+          - "2018-03-07T00:00:00"
+          - "2018-03-07T01:00:00"
+        reporterdescription.reporterHostname: FW1
+      ext-short-3:
+        timestamp:
+          - "2018-03-07T00:00:00"
+          - "2018-03-07T01:00:00"
+        reporterdescription.reporterHostname: FW2
+    data-collections:
+      training:
+        - normal-0
+        - memleak-no-traffic-0
+        - memleak-normal-0
+        #- ext-0
+        #- ext-3
+        - ext-short-0
+      validation:
+        - normal-1
+        - memleak-no-traffic-1
+        - memleak-normal-1
+        #- ext-1
+        #- ext-2
+        - ext-short-1
+      test0:
+        - ext-short-2
+        - memleak-0
+      test1:
+        - memleak-1
+    learning-columns:
+      - datadefinition.CPU
+      - datadefinition.ENS4_IN
+      - datadefinition.ENS4_OUT
+      - datadefinition.ENS5_IN
+      - datadefinition.ENS5_OUT
+      - datadefinition.HDD
+      - datadefinition.MEM
+      - datadefinition.CPU.diff
+      - datadefinition.ENS4_IN.diff
+      - datadefinition.ENS4_OUT.diff
+      - datadefinition.ENS5_IN.diff
+      - datadefinition.ENS5_OUT.diff
+      - datadefinition.HDD.diff
+      - datadefinition.MEM.diff
+    test-output-directory: output/tests/sh
+#
+#kafka-frontend:
+#  topics:
+#    #metrics: null
+#    cep_output: null
+#  bootstrap-servers: 192.168.89.226:9092
+#kafka-backend:
+#  topics:
+#    null: diagnosis
+#    err: diagnoser-debug
+#    log: diagnoser-debug
+#  bootstrap-servers: 192.168.89.226:9092
+#
+#kafka-bootstrap-servers:
+#  - 192.168.89.226:9092
+#kafka-topics:
+#  - cep_output
+#cassandra-host: 192.168.89.225

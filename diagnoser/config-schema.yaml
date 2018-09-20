@@ -1,0 +1,455 @@
+$id: selfnet/diagnoser/config-schema.json
+$schema: http://json-schema.org/draft-04/schema#
+title: SELFNET Diagnoser configuration schema
+description:
+  This is a JSON Schema describing all possible configuration options of the
+  SELFNET Diagnoser.  This includes the command line options.
+type: object
+properties:
+  $schema:
+    type: string
+    format: uri
+  configs:
+    description: configuration files to be read
+    type: array
+    items:
+      type: string
+      format: uri-reference
+    cl: true
+    cl-short: c
+    cl-long: config
+  no-default-configs:
+    description: disable additional config files
+    type: boolean
+    default: false
+    cl: true
+    cl-short: C
+  additional-configs:
+    description: supply additional config files
+    type: array
+    items:
+      type: string
+      format: uri-reference
+    default: []
+  dry-run:
+    description: disable all interfaces and connectors
+    type: boolean
+    default: false
+    cl: true
+    cl-short: n
+  test:
+    description: name of the test to be performed if any
+    type:
+      - "null"
+      - string
+    default:
+    cl: true
+    cl-short: t
+  kafka:
+    description: configuration of Kafka interface
+    type: object
+    properties:
+      bootstrap-servers:
+        description:
+          a list of strings containing the IP-adresses of Kafka bootstrap
+          servers
+        type: array
+        items:
+          type: string
+        default: []
+        #cl: true
+        #cl-short: b
+        #cl-long: kafka-bootstrap-server
+        #cl-help:
+        #  kafka bootstrap server ip; can be specified more than once to try
+        #  multiple bootstrap servers
+      topics:
+        description: a list of strings containing the Kafka topic names
+        type: array
+        items:
+          type: string
+        default: []
+        #cl: true
+        #cl-short: T
+        #cl-long: kafka-topic
+        #cl-help:
+        #  kafka topic name; can be specified more than once to listen to
+        #  multiple topics
+      from-file:
+        description:
+          If a filename is provided here, the KafkaConsumer will read from this
+          file instead of connecting to Kafka.  This way, tests can be
+          performed without having a Kafka message bus up.
+        type:
+          - "null"
+          - string
+        default:
+    additionalProperties: false
+  cassandra:
+    description: configuration of Cassandra interface
+    type: object
+    properties:
+      host:
+        description: IP-address of Cassandra database server
+        type: string
+        #cl: true
+        #cl-short: H
+        #cl-long: cassandra-host
+      keyspace:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+      row-limit:
+        type: integer
+      fetch-size:
+        type: integer
+      from-file:
+        description:
+          If a filename is provided here, the CassandraClient will read data
+          from this file instead of connecting to an actual Cassandra instance.
+          This way, tests can be performed without having a Cassandra database
+          up and running.
+        type:
+          - "null"
+          - string
+        default:
+    additionalProperties: false
+  task-manager:
+    description: configuration of Task Manager interface
+    type: object
+    properties:
+      task-url:
+        description: Task Manager endpoint for managing tasks
+        type: string
+        format: uri
+      keyspace:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+      time-limit:
+        type: integer
+      row-limit:
+        type: integer
+      fetch-size:
+        type: integer
+    additionalProperties: false
+  monasca:
+    description: configuration of Monasca interface
+    type: object
+    properties:
+      endpoint:
+        description: URL identifying the Monasca instance
+        type: string
+        format: uri
+      auth-url:
+        type: string
+        format: uri
+      username:
+        type: string
+      password:
+        type: string
+      project-name:
+        type: string
+      user-domain-id:
+        type: string
+        default: default
+      project-domain-id:
+        type: string
+        default: default
+      to-file:
+        description:
+          If a filename is provided here, the Monasca cilent will be stubbed
+          out and all monasca requests will be written to the file with the
+          specified name.  This way, tests can be performed without having a
+          Monasca instance up and running.
+        type:
+          - "null"
+          - string
+        default:
+    additionalProperties: false
+  model-db:
+    description: configuration of Model DB interface
+    type: object
+    properties:
+      host:
+        description: Host of the Model DB
+        type: string
+      port:
+        description: Port for accessing the Model DB
+        type: integer
+        minimum: 0
+        maximum: 65535
+      db-name:
+        description: Name of the Model DB
+        type: string
+      collection-name:
+        description: Name of the Model collection within the Model DB
+        type: string
+    additionalProperties: false
+  metric-prefix:
+    description: prefix for names of generated metrics
+    type: string
+    default: ""
+  output-directory:
+    description: directory where to put additional output
+    type: string
+    default: ~/selfnet-diagnoser-output
+  test-configurations:
+    description: special configurations for individual tests
+    type: object
+    properties:
+      active-test:
+        description: name of the currently active test
+        enum:
+          - null
+          - sp
+          - sh
+      sp:
+        description: configuration for self protection test
+        type: object
+        properties:
+          metric-name:
+            description: name of the new aggregation metric to be created
+            type: string
+          task-name:
+            description: name of the new aggregation task to be created
+            type: string
+          alarm-name:
+            description: name of the new Monasca alarm to be created
+            type: string
+          rule-name:
+            description: name of the new TAL rule to be created
+            type: string
+          neat-config:
+            description:
+              file containing the configuration parameters for the NEAT
+              algorithm
+            type: string
+          neat-generations:
+            description: number of generations to run the NEAT algorithm
+            type: integer
+            minimum: 0
+          disable-kafka:
+            description: if enabled, do not read data from CEP engine
+            type: boolean
+            default: false
+          max-zombie-ips:
+            description:
+              maximum number of botnet ips to wait for while listening on kafka
+            type: integer
+            minimum: 0
+          c-and-c-ip:
+            description:
+              if set, overrides the C&C IP during the test
+            type:
+              - "null"
+              - string
+            anyOf:
+              - format: ipv4
+              - format: ipv6
+            default:
+          zombie-ips:
+            description:
+              if set, overrides the list of zombie IPs during the test
+            type:
+              - "null"
+              - array
+            items:
+              type: string
+              anyOf:
+                - format: ipv4
+                - format: ipv6
+            default:
+          time-window:
+            description: range where to look for data within cassandra
+            type: array
+            items:
+              type: string
+              format: timestamp
+            maxItems: 2
+            minItems: 2
+          canned-task-file:
+            description:
+              if set, instead of dynamically generating the task to be pushed
+              to the aggregator, load it from the specified file
+            type:
+              - "null"
+              - string
+          test-output-directory:
+            description: directory where to put test results
+            type: string
+            default: output/tests/sp
+        additionalProperties: false
+      sh:
+        description: configuration for self healing test
+        type: object
+        properties:
+          canned-tal-script:
+            description:
+              if set, instead of dynamically generating the tal-script to be pushed
+              to the tal-engine, load it from the specified file
+            type:
+              - "null"
+              - string
+          disable-kafka:
+            description: if enabled, do not read data from CEP engine
+            type: boolean
+            default: false
+          #raw-data-filename:
+          #  description: name of the file containing the raw metric dataset
+          #  type: string
+          resource-types:
+            description:
+              list of resource types to be fetched from cassandra
+            type: array
+            items:
+              type: string
+          raw-data-columns:
+            description:
+              list of dataset column keys to be fetched from cassandra
+            type: array
+            items:
+              type: string
+          service-id:
+            description: service_id for the VNF to be profiled
+            type: string
+          timestamp:
+            description: timestamp of end of time window
+            type: string
+          data-ranges:
+            description: filtering descriptors of the ranges inside the dataset
+            type: object
+          data-collections:
+            description: collections of data ranges to be used in the test
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                description:
+                  this has to be the name of a data range defined in the
+                  data-ranges property
+                type: string
+          learning-columns:
+            description:
+              list of dataset column keys to be used by the actual learning
+              algorithm
+            type: array
+            items:
+              type: string
+          test-output-directory:
+            description: directory where to put test results
+            type: string
+            default: output/tests/sh
+        additionalProperties: false
+    additionalProperties: false
+  #kafka-bootstrap-servers:
+  #  description: list of Kafka bootstrap servers
+  #  type: array
+  #  items:
+  #    type: string
+  #  default: []
+  #  cl: true
+  #  cl-short: b
+  #  cl-long: kafka-bootstrap-server
+  #kafka-topics:
+  #  description: list of Kafka topics
+  #  type: array
+  #  items:
+  #    type: string
+  #  default: []
+  #  cl: true
+  #  cl-short: T
+  #  cl-long: kafka-topic
+  #cassandra-host:
+  #  description: IP-address of Cassandra database server
+  #  type: string
+  #  cl: true
+  #  cl-short: H
+  #  cl-long: cassandra-host
+  #input:
+  #  description: read input for stdin frontend from INPUT (currently unused)
+  #  anyOf:
+  #    - enum:
+  #      -
+  #      - ""
+  #    - type: string
+  #      format: uri-reference
+  #      minLength: 1
+  #  default:
+  #  cl: true
+  #  cl-short: i
+  #output:
+  #  description: write output to OUTPUT (currently unused)
+  #  anyOf:
+  #    - enum:
+  #      -
+  #      - ""
+  #    - type: string
+  #      format: uri-reference
+  #      minLength: 1
+  #  default:
+  #  cl: true
+  #  cl-short: o
+  #log:
+  #  description: write log to LOG (currently unused)
+  #  anyOf:
+  #    - enum:
+  #      -
+  #      - ""
+  #    - type: string
+  #      format: uri-reference
+  #      minLength: 1
+  #  default:
+  #  cl: true
+  #  cl-short: l
+  #frontend:
+  #  description: the frontend to use (currently unused)
+  #  enum:
+  #    - stdin
+  #    - kafka
+  #    - stdin_fma
+  #  default: stdin
+  #  cl: true
+  #  cl-short: f
+  #  # allow specification of arbitrary adapter graphs
+  #kafka-frontend:
+  #  description: configuration of KafkaFrontend (currently unused)
+  #  type: object
+  #  properties:
+  #    topics:
+  #      description: a mapping of topic names to KafkaFrontend outputs
+  #      type: object
+  #    bootstrap-servers:
+  #      description: a string or list of strings containing the 
+  #      type:
+  #        - array
+  #        - string
+  #      items:
+  #        type: string
+  #      default: []
+  #  additionalProperties: false
+  #kafka-backend:
+  #  description: configuration of KafkaBackend (currently unused)
+  #  type: object
+  #  properties:
+  #    topics:
+  #      description: a mapping of KafkaFrontend inputs to topic names
+  #      type: object
+  #    bootstrap-servers:
+  #      description: a string or list of strings containing the 
+  #      type:
+  #        - array
+  #        - string
+  #      items:
+  #        type: string
+  #  additionalProperties: false
+depend:
+  configs:
+    not: {}
+  no-default-configs:
+    not: {}
+additionalProperties: false
